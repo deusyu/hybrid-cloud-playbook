@@ -13,6 +13,6 @@
 📖 **快速开始**
 
 ```bash
-git clone https://github.com/<you>/hybrid-cloud-playbook.git
+git clone https://github.com/deusyu/hybrid-cloud-playbook.git
 cd hybrid-cloud-playbook/terraform/examples
 terraform init && terraform plan
