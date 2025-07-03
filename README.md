@@ -1,4 +1,4 @@
-# Hybrid Cloud Playbook ☁️
+# Hybrid Cloud Playbook
 
 > **Practical patterns for CMP, IaC & multi-cloud architecture**  
 > 一份能跑、能学、能拆的混合云手册
