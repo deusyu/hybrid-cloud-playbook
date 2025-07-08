@@ -96,6 +96,7 @@ terraform apply
 - [Azure 实战指南](terraform/examples/azure/)
 - [GCP 实战指南](terraform/examples/gcp/)
 - [多云架构设计](terraform/examples/multi-cloud/)
+- [云计算角色手册](docs/handbook/cloud-roles.md)
 
 ### 🧠 脑图指南
 - [混合云学习路径](mindmaps/hybrid-cloud-learning-path.md)
