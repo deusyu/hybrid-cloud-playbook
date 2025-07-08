@@ -414,12 +414,10 @@ gh release create v1.2.0 --generate-notes
 ### 获取帮助
 - 📋 **问题报告**：[GitHub Issues](https://github.com/deusyu/hybrid-cloud-playbook/issues)
 - 💬 **讨论交流**：[GitHub Discussions](https://github.com/deusyu/hybrid-cloud-playbook/discussions)
-- 📧 **邮件联系**：[deus.yu@example.com](mailto:deus.yu@example.com)
+- 📧 **邮件联系**：[rainman.deus@gmail.com](mailto:rainman.deus@gmail.com)
 
 ### 社区参与
 - 💬 **Slack 频道**：[#hybrid-cloud-playbook](https://slack.com/channels/hybrid-cloud-playbook)
-- 🐦 **Twitter**：[@HybridCloudPlaybook](https://twitter.com/HybridCloudPlaybook)
-- 📺 **YouTube**：[Hybrid Cloud Tutorials](https://youtube.com/channel/hybrid-cloud-tutorials)
 
 ## 🎉 致谢
 

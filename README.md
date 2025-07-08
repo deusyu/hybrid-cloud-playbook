@@ -173,11 +173,9 @@ terraform apply
 ### 获取帮助
 - 📋 **问题反馈**：[GitHub Issues](https://github.com/deusyu/hybrid-cloud-playbook/issues)
 - 💬 **社区讨论**：[GitHub Discussions](https://github.com/deusyu/hybrid-cloud-playbook/discussions)
-- 📧 **邮件联系**：[deus.yu@example.com](mailto:deus.yu@example.com)
+- 📧 **邮件联系**：[rainman.deus@gmail.com](mailto:rainman.deus@gmail.com)
 
 ### 社区交流
-- 🐦 **Twitter**：[@HybridCloudPlaybook](https://twitter.com/HybridCloudPlaybook)
-- 📺 **YouTube**：[Hybrid Cloud Tutorials](https://youtube.com/channel/hybrid-cloud-tutorials)
 - 📖 **博客**：[技术博客](https://blog.hybrid-cloud-playbook.com)
 
 ## 📄 许可证

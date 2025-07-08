@@ -152,7 +152,7 @@ A: 请参考 [CONTRIBUTING.md](../../CONTRIBUTING.md) 了解贡献指南
 
 - 📋 **问题反馈**: [GitHub Issues](https://github.com/deusyu/hybrid-cloud-playbook/issues)
 - 💬 **社区讨论**: [GitHub Discussions](https://github.com/deusyu/hybrid-cloud-playbook/discussions)
-- 📧 **联系作者**: [deus.yu@example.com](mailto:deus.yu@example.com)
+- 📧 **联系作者**: [rainman.deus@gmail.com](mailto:rainman.deus@gmail.com)
 
 ## 🎉 下一步
 
