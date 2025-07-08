@@ -95,7 +95,7 @@ terraform apply
 - [AWS 实战指南](terraform/examples/aws/)
 - [Azure 实战指南](terraform/examples/azure/)
 - [GCP 实战指南](terraform/examples/gcp/)
-- [多云架构设计](terraform/examples/multi-cloud/)
+- [多云架构设计](terrafoAI 时代，如果你需要一个产品的话，你需要什么？rm/examples/multi-cloud/)
 - [云计算角色手册](docs/handbook/cloud-roles.md)
 
 ### 🧠 脑图指南
@@ -176,7 +176,7 @@ terraform apply
 - 📧 **邮件联系**：[rainman.deus@gmail.com](mailto:rainman.deus@gmail.com)
 
 ### 社区交流
-- 📖 **博客**：[技术博客](https://blog.hybrid-cloud-playbook.com)
+- 📖 **博客**：[技术博客](https://deusyu.app/)
 
 ## 📄 许可证
 
