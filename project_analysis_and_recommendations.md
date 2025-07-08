@@ -148,3 +148,4 @@ hybrid-cloud-playbook/
 5. **文档生成**：terraform-docs
 
 这个分析为你的混合云 Playbook 提供了完整的发展路线图。建议从优先级 1 开始，逐步完善整个项目。
+> **2025-07-08 更新**：已初步补充 diagrams/、examples/、Azure 与 GCP 基础示例等目录与内容，详见最新提交。
