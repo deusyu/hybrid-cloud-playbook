@@ -1,10 +1,15 @@
 # AWS Simple VPC Example
 
-这是一个完整的 AWS VPC 示例，展示了如何使用 Terraform 创建一个生产就绪的 VPC 架构。
+> **生产就绪的AWS VPC基础设施模板**  
+> 使用Terraform一键创建高可用、安全、可扩展的AWS网络架构
+
+[![Terraform](https://img.shields.io/badge/Terraform-1.0+-blue.svg)](https://www.terraform.io/)
+[![AWS](https://img.shields.io/badge/AWS-Compatible-orange.svg)](https://aws.amazon.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](../../../../LICENSE)
 
 ## 🏗️ 架构概述
 
-这个示例创建了以下 AWS 资源：
+这个示例创建了一个完整的企业级AWS VPC环境，包含以下核心组件：
 
 ### 网络基础设施
 - **VPC**: 一个带有 DNS 支持的虚拟私有云
@@ -234,10 +239,72 @@ terraform destroy
 3. **集成 AWS X-Ray**
 4. **使用 AWS CloudTrail**
 
-## 🤝 贡献
+## 📚 相关资源
 
-欢迎提交 Issue 和 Pull Request 来改进这个示例！
+### 架构图表
+- [AWS VPC 详细架构图](../../../../diagrams/architecture/aws-vpc-architecture.mermaid)
+- [混合云整体架构](../../../../diagrams/architecture/hybrid-cloud-overview.mermaid)
+- [多云网络连接图](../../../../diagrams/architecture/multi-cloud-network.mermaid)
+
+### 文档参考
+- [AWS VPC 最佳实践](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-best-practices.html)
+- [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- [混合云基础架构指南](../../../../docs/architecture/hybrid-cloud-fundamentals.md)
+
+### 相关示例
+- [Azure Virtual Network 示例](../../azure/virtual-network/)
+- [GCP VPC Network 示例](../../gcp/vpc-network/)
+- [多云基础示例](../../multi-cloud/basic/)
+
+## 🔗 快速导航
+
+| 链接 | 说明 |
+|------|------|
+| [⬆️ 返回 Terraform 示例](../../) | 查看所有云平台示例 |
+| [📖 项目文档](../../../../docs/) | 深入学习混合云概念 |
+| [� 学习路径](../../../../mindmaps/) | 混合云学习脑图 |
+| [🛠️ 工具脚本](../../../../scripts/) | 自动化部署脚本 |
+
+## �🤝 贡献指南
+
+我们欢迎各种形式的贡献！
+
+### 如何贡献
+1. **Fork** 本项目
+2. **创建分支**：`git checkout -b feature/aws-enhancement`
+3. **提交更改**：`git commit -m 'Add some AWS feature'`
+4. **推送分支**：`git push origin feature/aws-enhancement`
+5. **创建 Pull Request**
+
+### 改进建议
+- 🚀 性能优化方案
+- 🛡️ 安全加固措施
+- 💰 成本优化策略
+- 📊 监控告警配置
+- 🔧 故障排除指南
+
+## 📞 获取帮助
+
+### 问题反馈
+- 📋 [创建 Issue](https://github.com/deusyu/hybrid-cloud-playbook/issues)
+- 💬 [社区讨论](https://github.com/deusyu/hybrid-cloud-playbook/discussions)
+
+### 技术支持
+- 📧 邮件：[rainman.deus@gmail.com](mailto:rainman.deus@gmail.com)
+- 📖 博客：[deusyu.app](https://deusyu.app/)
 
 ## 📄 许可证
 
 本项目使用 MIT 许可证。详情请参阅 [LICENSE](../../../../LICENSE) 文件。
+
+---
+
+<div align="center">
+
+**🌟 如果这个示例对你有帮助，请给项目一个 Star！🌟**
+
+[⭐ Star 项目](https://github.com/deusyu/hybrid-cloud-playbook) | [🍴 Fork 项目](https://github.com/deusyu/hybrid-cloud-playbook/fork) | [📖 查看文档](../../../../README.md)
+
+Made with ❤️ by the Hybrid Cloud Playbook community
+
+</div>

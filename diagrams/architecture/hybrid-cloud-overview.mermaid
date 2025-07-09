@@ -1,0 +1,149 @@
+graph TB
+    subgraph "🌐 Internet"
+        INT[Internet]
+    end
+    
+    subgraph "🏢 On-Premises"
+        DC[Data Center]
+        APP1[Legacy Applications]
+        DB1[On-Prem Database]
+        DC --- APP1
+        DC --- DB1
+    end
+    
+    subgraph "☁️ AWS"
+        direction TB
+        VPC_AWS[VPC 10.1.0.0/16]
+        
+        subgraph "AWS Public Subnet"
+            ALB[Application Load Balancer]
+            NAT_AWS[NAT Gateway]
+            BASTION_AWS[Bastion Host]
+        end
+        
+        subgraph "AWS Private Subnet"
+            EC2_AWS[EC2 Instances]
+            RDS_AWS[RDS Database]
+            EKS_AWS[EKS Cluster]
+        end
+        
+        S3[S3 Storage]
+        
+        VPC_AWS --- ALB
+        VPC_AWS --- NAT_AWS
+        VPC_AWS --- BASTION_AWS
+        VPC_AWS --- EC2_AWS
+        VPC_AWS --- RDS_AWS
+        VPC_AWS --- EKS_AWS
+    end
+    
+    subgraph "☁️ Azure"
+        direction TB
+        VNET_AZ[VNet 10.2.0.0/16]
+        
+        subgraph "Azure Public Subnet"
+            LB_AZ[Load Balancer]
+            NAT_AZ[NAT Gateway]
+            BASTION_AZ[Bastion Host]
+        end
+        
+        subgraph "Azure Private Subnet"
+            VM_AZ[Virtual Machines]
+            SQL_AZ[Azure SQL]
+            AKS_AZ[AKS Cluster]
+        end
+        
+        BLOB_AZ[Blob Storage]
+        
+        VNET_AZ --- LB_AZ
+        VNET_AZ --- NAT_AZ
+        VNET_AZ --- BASTION_AZ
+        VNET_AZ --- VM_AZ
+        VNET_AZ --- SQL_AZ
+        VNET_AZ --- AKS_AZ
+    end
+    
+    subgraph "☁️ GCP"
+        direction TB
+        VPC_GCP[VPC 10.3.0.0/16]
+        
+        subgraph "GCP Public Subnet"
+            LB_GCP[Global Load Balancer]
+            NAT_GCP[Cloud NAT]
+            BASTION_GCP[Bastion Host]
+        end
+        
+        subgraph "GCP Private Subnet"
+            CE_GCP[Compute Engine]
+            SQL_GCP[Cloud SQL]
+            GKE_GCP[GKE Cluster]
+        end
+        
+        GCS[Cloud Storage]
+        
+        VPC_GCP --- LB_GCP
+        VPC_GCP --- NAT_GCP
+        VPC_GCP --- BASTION_GCP
+        VPC_GCP --- CE_GCP
+        VPC_GCP --- SQL_GCP
+        VPC_GCP --- GKE_GCP
+    end
+    
+    subgraph "🔄 Multi-Cloud Management"
+        direction LR
+        TERRAFORM[Terraform]
+        ANSIBLE[Ansible]
+        MONITORING[Monitoring & Logging]
+        CICD[CI/CD Pipeline]
+        
+        TERRAFORM --- ANSIBLE
+        ANSIBLE --- MONITORING
+        MONITORING --- CICD
+    end
+    
+    %% Connections
+    INT --- ALB
+    INT --- LB_AZ
+    INT --- LB_GCP
+    
+    %% Site-to-Site VPN Connections
+    DC -.->|VPN Gateway| VPC_AWS
+    DC -.->|VPN Gateway| VNET_AZ
+    DC -.->|VPN Gateway| VPC_GCP
+    
+    %% Inter-Cloud Connections
+    VPC_AWS -.->|VPC Peering/Transit Gateway| VNET_AZ
+    VNET_AZ -.->|VNet Peering| VPC_GCP
+    VPC_GCP -.->|Cloud Interconnect| VPC_AWS
+    
+    %% Management Connections
+    TERRAFORM -.-> VPC_AWS
+    TERRAFORM -.-> VNET_AZ
+    TERRAFORM -.-> VPC_GCP
+    TERRAFORM -.-> DC
+    
+    MONITORING -.-> VPC_AWS
+    MONITORING -.-> VNET_AZ
+    MONITORING -.-> VPC_GCP
+    MONITORING -.-> DC
+    
+    %% Data Flow
+    APP1 <-.->|Data Sync| RDS_AWS
+    RDS_AWS <-.->|Cross-Region Replication| SQL_AZ
+    SQL_AZ <-.->|Data Pipeline| SQL_GCP
+    
+    S3 <-.->|Cross-Cloud Backup| BLOB_AZ
+    BLOB_AZ <-.->|Data Archive| GCS
+    
+    %% Styling
+    classDef awsColor fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#fff
+    classDef azureColor fill:#0078D4,stroke:#0078D4,stroke-width:2px,color:#fff
+    classDef gcpColor fill:#4285F4,stroke:#4285F4,stroke-width:2px,color:#fff
+    classDef onpremColor fill:#8B4513,stroke:#8B4513,stroke-width:2px,color:#fff
+    classDef mgmtColor fill:#28A745,stroke:#28A745,stroke-width:2px,color:#fff
+    
+    class VPC_AWS,ALB,NAT_AWS,BASTION_AWS,EC2_AWS,RDS_AWS,EKS_AWS,S3 awsColor
+    class VNET_AZ,LB_AZ,NAT_AZ,BASTION_AZ,VM_AZ,SQL_AZ,AKS_AZ,BLOB_AZ azureColor
+    class VPC_GCP,LB_GCP,NAT_GCP,BASTION_GCP,CE_GCP,SQL_GCP,GKE_GCP,GCS gcpColor
+    class DC,APP1,DB1 onpremColor
+    class TERRAFORM,ANSIBLE,MONITORING,CICD mgmtColor

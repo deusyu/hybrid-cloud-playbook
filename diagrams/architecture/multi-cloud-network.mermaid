@@ -1,0 +1,219 @@
+graph TB
+    subgraph "🏢 On-Premises Data Center"
+        DC_CORE[Core Network<br/>192.168.0.0/16]
+        DC_APP[Legacy Applications]
+        DC_DB[On-Prem Database]
+        DC_VPN[VPN Gateway]
+        DC_FIREWALL[Firewall]
+        
+        DC_CORE --- DC_APP
+        DC_CORE --- DC_DB
+        DC_CORE --- DC_VPN
+        DC_CORE --- DC_FIREWALL
+    end
+    
+    subgraph "☁️ AWS Region us-east-1"
+        VPC_AWS[AWS VPC<br/>10.1.0.0/16]
+        
+        subgraph "AWS Networking"
+            VGW_AWS[Virtual Private Gateway]
+            TGW_AWS[Transit Gateway]
+            IGW_AWS[Internet Gateway]
+            NATGW_AWS[NAT Gateway]
+        end
+        
+        subgraph "AWS Subnets"
+            PUB_AWS[Public Subnet<br/>10.1.1.0/24]
+            PRIV_AWS[Private Subnet<br/>10.1.2.0/24]
+        end
+        
+        subgraph "AWS Services"
+            EC2_AWS[EC2 Instances]
+            RDS_AWS[RDS Database]
+            S3_AWS[S3 Bucket]
+        end
+        
+        VPC_AWS --- VGW_AWS
+        VPC_AWS --- TGW_AWS
+        VPC_AWS --- IGW_AWS
+        VPC_AWS --- PUB_AWS
+        VPC_AWS --- PRIV_AWS
+        PUB_AWS --- NATGW_AWS
+        PRIV_AWS --- EC2_AWS
+        PRIV_AWS --- RDS_AWS
+        EC2_AWS -.-> S3_AWS
+    end
+    
+    subgraph "☁️ Azure Region East US"
+        VNET_AZ[Azure VNet<br/>10.2.0.0/16]
+        
+        subgraph "Azure Networking"
+            VGW_AZ[Virtual Network Gateway]
+            FIREWALL_AZ[Azure Firewall]
+            LB_AZ[Load Balancer]
+            NATGW_AZ[NAT Gateway]
+        end
+        
+        subgraph "Azure Subnets"
+            PUB_AZ[Public Subnet<br/>10.2.1.0/24]
+            PRIV_AZ[Private Subnet<br/>10.2.2.0/24]
+            FIREWALL_SUBNET[AzureFirewallSubnet<br/>10.2.255.0/26]
+        end
+        
+        subgraph "Azure Services"
+            VM_AZ[Virtual Machines]
+            SQL_AZ[Azure SQL]
+            STORAGE_AZ[Storage Account]
+        end
+        
+        VNET_AZ --- VGW_AZ
+        VNET_AZ --- PUB_AZ
+        VNET_AZ --- PRIV_AZ
+        VNET_AZ --- FIREWALL_SUBNET
+        FIREWALL_SUBNET --- FIREWALL_AZ
+        PUB_AZ --- LB_AZ
+        PUB_AZ --- NATGW_AZ
+        PRIV_AZ --- VM_AZ
+        PRIV_AZ --- SQL_AZ
+        VM_AZ -.-> STORAGE_AZ
+    end
+    
+    subgraph "☁️ GCP Region us-central1"
+        VPC_GCP[GCP VPC<br/>10.3.0.0/16]
+        
+        subgraph "GCP Networking"
+            VGW_GCP[Cloud VPN Gateway]
+            ROUTER_GCP[Cloud Router]
+            LB_GCP[Global Load Balancer]
+            NAT_GCP[Cloud NAT]
+        end
+        
+        subgraph "GCP Subnets"
+            PUB_GCP[Public Subnet<br/>10.3.1.0/24]
+            PRIV_GCP[Private Subnet<br/>10.3.2.0/24]
+        end
+        
+        subgraph "GCP Services"
+            CE_GCP[Compute Engine]
+            SQL_GCP[Cloud SQL]
+            GCS_GCP[Cloud Storage]
+        end
+        
+        VPC_GCP --- VGW_GCP
+        VPC_GCP --- ROUTER_GCP
+        VPC_GCP --- PUB_GCP
+        VPC_GCP --- PRIV_GCP
+        PUB_GCP --- LB_GCP
+        ROUTER_GCP --- NAT_GCP
+        PRIV_GCP --- CE_GCP
+        PRIV_GCP --- SQL_GCP
+        CE_GCP -.-> GCS_GCP
+    end
+    
+    subgraph "🌐 Internet"
+        INTERNET[Public Internet]
+    end
+    
+    subgraph "🔄 Cloud Interconnect Services"
+        EXPRESSROUTE[Azure ExpressRoute]
+        DIRECTCONNECT[AWS Direct Connect]
+        CLOUDINTERCONNECT[GCP Cloud Interconnect]
+        
+        EXPRESSROUTE -.-> DIRECTCONNECT
+        DIRECTCONNECT -.-> CLOUDINTERCONNECT
+        CLOUDINTERCONNECT -.-> EXPRESSROUTE
+    end
+    
+    %% Site-to-Site VPN Connections
+    DC_VPN -.->|Site-to-Site VPN<br/>IPSec Tunnel| VGW_AWS
+    DC_VPN -.->|Site-to-Site VPN<br/>IPSec Tunnel| VGW_AZ
+    DC_VPN -.->|Site-to-Site VPN<br/>IPSec Tunnel| VGW_GCP
+    
+    %% Direct Connect / Private Connections
+    DC_CORE -.->|AWS Direct Connect<br/>Dedicated Line| DIRECTCONNECT
+    DC_CORE -.->|Azure ExpressRoute<br/>Dedicated Line| EXPRESSROUTE
+    DC_CORE -.->|GCP Interconnect<br/>Dedicated Line| CLOUDINTERCONNECT
+    
+    DIRECTCONNECT -.-> VGW_AWS
+    EXPRESSROUTE -.-> VGW_AZ
+    CLOUDINTERCONNECT -.-> VGW_GCP
+    
+    %% Inter-Cloud Connections
+    TGW_AWS -.->|Cross-Cloud VPN<br/>Encrypted Tunnel| VGW_AZ
+    VGW_AZ -.->|VNet Peering<br/>Azure Backbone| VGW_GCP
+    VGW_GCP -.->|Cloud VPN<br/>Encrypted Tunnel| TGW_AWS
+    
+    %% Internet Connections
+    INTERNET --- IGW_AWS
+    INTERNET --- LB_AZ
+    INTERNET --- LB_GCP
+    
+    %% Data Flow Examples
+    DC_APP -.->|Data Sync| RDS_AWS
+    RDS_AWS -.->|Cross-Region Replication| SQL_AZ
+    SQL_AZ -.->|Data Pipeline| SQL_GCP
+    
+    S3_AWS -.->|Cross-Cloud Backup| STORAGE_AZ
+    STORAGE_AZ -.->|Archive| GCS_GCP
+    
+    %% Network Routes
+    VGW_AWS -.->|Route: 192.168.0.0/16| DC_CORE
+    VGW_AZ -.->|Route: 192.168.0.0/16| DC_CORE
+    VGW_GCP -.->|Route: 192.168.0.0/16| DC_CORE
+    
+    TGW_AWS -.->|Route: 10.2.0.0/16| VGW_AZ
+    TGW_AWS -.->|Route: 10.3.0.0/16| VGW_GCP
+    
+    %% Security and Compliance
+    subgraph "🛡️ Security & Compliance"
+        ENCRYPTION[End-to-End Encryption]
+        MONITORING[Multi-Cloud Monitoring]
+        COMPLIANCE[Compliance Management]
+        BACKUP[Cross-Cloud Backup]
+        
+        ENCRYPTION --- MONITORING
+        MONITORING --- COMPLIANCE
+        COMPLIANCE --- BACKUP
+    end
+    
+    %% Management Tools
+    subgraph "🔧 Management & Orchestration"
+        TERRAFORM[Terraform IaC]
+        ANSIBLE[Ansible Automation]
+        PROMETHEUS[Prometheus Monitoring]
+        GRAFANA[Grafana Dashboards]
+        
+        TERRAFORM --- ANSIBLE
+        ANSIBLE --- PROMETHEUS
+        PROMETHEUS --- GRAFANA
+    end
+    
+    %% Management Connections
+    TERRAFORM -.-> VPC_AWS
+    TERRAFORM -.-> VNET_AZ
+    TERRAFORM -.-> VPC_GCP
+    TERRAFORM -.-> DC_CORE
+    
+    MONITORING -.-> EC2_AWS
+    MONITORING -.-> VM_AZ
+    MONITORING -.-> CE_GCP
+    MONITORING -.-> DC_APP
+    
+    %% Styling
+    classDef awsColor fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#fff
+    classDef azureColor fill:#0078D4,stroke:#0078D4,stroke-width:2px,color:#fff
+    classDef gcpColor fill:#4285F4,stroke:#4285F4,stroke-width:2px,color:#fff
+    classDef onpremColor fill:#8B4513,stroke:#8B4513,stroke-width:2px,color:#fff
+    classDef internetColor fill:#4CAF50,stroke:#4CAF50,stroke-width:2px,color:#fff
+    classDef securityColor fill:#F44336,stroke:#F44336,stroke-width:2px,color:#fff
+    classDef mgmtColor fill:#9C27B0,stroke:#9C27B0,stroke-width:2px,color:#fff
+    classDef interconnectColor fill:#FF5722,stroke:#FF5722,stroke-width:2px,color:#fff
+    
+    %% Apply Styles
+    class VPC_AWS,VGW_AWS,TGW_AWS,IGW_AWS,NATGW_AWS,PUB_AWS,PRIV_AWS,EC2_AWS,RDS_AWS,S3_AWS,DIRECTCONNECT awsColor
+    class VNET_AZ,VGW_AZ,FIREWALL_AZ,LB_AZ,NATGW_AZ,PUB_AZ,PRIV_AZ,FIREWALL_SUBNET,VM_AZ,SQL_AZ,STORAGE_AZ,EXPRESSROUTE azureColor
+    class VPC_GCP,VGW_GCP,ROUTER_GCP,LB_GCP,NAT_GCP,PUB_GCP,PRIV_GCP,CE_GCP,SQL_GCP,GCS_GCP,CLOUDINTERCONNECT gcpColor
+    class DC_CORE,DC_APP,DC_DB,DC_VPN,DC_FIREWALL onpremColor
+    class INTERNET internetColor
+    class ENCRYPTION,MONITORING,COMPLIANCE,BACKUP securityColor
+    class TERRAFORM,ANSIBLE,PROMETHEUS,GRAFANA mgmtColor
