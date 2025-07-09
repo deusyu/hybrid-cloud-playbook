@@ -1,0 +1,154 @@
+```mermaid
+graph TB
+    subgraph "🌐 Internet"
+        IGW[Internet Gateway]
+    end
+    
+    subgraph "📍 Availability Zone us-east-1a"
+        subgraph "🌐 Public Subnet 1a (10.0.1.0/24)"
+            ALB1[Application Load Balancer]
+            NAT1[NAT Gateway 1]
+            BASTION1[Bastion Host]
+            EIP1[Elastic IP]
+            
+            NAT1 --- EIP1
+        end
+        
+        subgraph "🔒 Private Subnet 1a (10.0.3.0/24)"
+            EC2_1a[EC2 Instance]
+            RDS_PRIMARY[RDS Primary]
+            EKS_NODE_1a[EKS Worker Node]
+        end
+    end
+    
+    subgraph "📍 Availability Zone us-east-1b"
+        subgraph "🌐 Public Subnet 1b (10.0.2.0/24)"
+            NAT2[NAT Gateway 2]
+            EIP2[Elastic IP]
+            
+            NAT2 --- EIP2
+        end
+        
+        subgraph "🔒 Private Subnet 1b (10.0.4.0/24)"
+            EC2_1b[EC2 Instance]
+            RDS_STANDBY[RDS Standby]
+            EKS_NODE_1b[EKS Worker Node]
+        end
+    end
+    
+    subgraph "🔒 Database Subnet Group"
+        subgraph "Database Subnet 1a (10.0.5.0/24)"
+            DB_1a[Database Instance]
+        end
+        
+        subgraph "Database Subnet 1b (10.0.6.0/24)"
+            DB_1b[Database Standby]
+        end
+    end
+    
+    subgraph "☁️ AWS Services"
+        S3[S3 Bucket]
+        ECR[ECR Repository]
+        CLOUDWATCH[CloudWatch]
+        EKS_CONTROL[EKS Control Plane]
+        SECRETS[Secrets Manager]
+        IAM[IAM Roles & Policies]
+    end
+    
+    subgraph "🛡️ Security Groups"
+        SG_ALB[ALB Security Group<br/>Port: 80, 443]
+        SG_WEB[Web Tier SG<br/>Port: 80, 443]
+        SG_APP[App Tier SG<br/>Port: 8080, 8443]
+        SG_DB[Database SG<br/>Port: 3306, 5432]
+        SG_BASTION[Bastion SG<br/>Port: 22]
+    end
+    
+    subgraph "🛣️ Route Tables"
+        RT_PUBLIC[Public Route Table]
+        RT_PRIVATE_1a[Private Route Table 1a]
+        RT_PRIVATE_1b[Private Route Table 1b]
+        RT_DB[Database Route Table]
+    end
+    
+    %% Internet Gateway Connections
+    IGW --- ALB1
+    IGW --- EIP1
+    IGW --- EIP2
+    
+    %% Load Balancer Connections
+    ALB1 --- EC2_1a
+    ALB1 --- EC2_1b
+    
+    %% NAT Gateway Connections
+    EC2_1a -.->|Internet Access| NAT1
+    EC2_1b -.->|Internet Access| NAT2
+    EKS_NODE_1a -.->|Pull Images| NAT1
+    EKS_NODE_1b -.->|Pull Images| NAT2
+    
+    %% Database Connections
+    EC2_1a --- RDS_PRIMARY
+    EC2_1b --- RDS_STANDBY
+    RDS_PRIMARY -.->|Replication| RDS_STANDBY
+    EC2_1a --- DB_1a
+    EC2_1b --- DB_1b
+    
+    %% EKS Connections
+    EKS_CONTROL --- EKS_NODE_1a
+    EKS_CONTROL --- EKS_NODE_1b
+    EKS_NODE_1a --- ECR
+    EKS_NODE_1b --- ECR
+    
+    %% Security Group Associations
+    ALB1 -.->|Protected by| SG_ALB
+    EC2_1a -.->|Protected by| SG_WEB
+    EC2_1b -.->|Protected by| SG_WEB
+    RDS_PRIMARY -.->|Protected by| SG_DB
+    RDS_STANDBY -.->|Protected by| SG_DB
+    BASTION1 -.->|Protected by| SG_BASTION
+    
+    %% Route Table Associations
+    RT_PUBLIC -.->|Routes| IGW
+    RT_PRIVATE_1a -.->|Routes| NAT1
+    RT_PRIVATE_1b -.->|Routes| NAT2
+    
+    %% AWS Services Integration
+    EC2_1a -.->|Logs| CLOUDWATCH
+    EC2_1b -.->|Logs| CLOUDWATCH
+    EC2_1a -.->|S3 Access| S3
+    EC2_1b -.->|S3 Access| S3
+    EC2_1a -.->|Secrets| SECRETS
+    EC2_1b -.->|Secrets| SECRETS
+    
+    %% IAM Integration
+    EC2_1a -.->|Assumes Role| IAM
+    EC2_1b -.->|Assumes Role| IAM
+    EKS_NODE_1a -.->|Node Role| IAM
+    EKS_NODE_1b -.->|Node Role| IAM
+    
+    %% Administrative Access
+    BASTION1 -.->|SSH Access| EC2_1a
+    BASTION1 -.->|SSH Access| EC2_1b
+    
+    %% Network Flow Labels
+    IGW -.->|0.0.0.0/0| RT_PUBLIC
+    NAT1 -.->|0.0.0.0/0| RT_PRIVATE_1a
+    NAT2 -.->|0.0.0.0/0| RT_PRIVATE_1b
+    
+    %% Styling
+    classDef publicSubnet fill:#E8F5E8,stroke:#4CAF50,stroke-width:2px
+    classDef privateSubnet fill:#FFF3E0,stroke:#FF9800,stroke-width:2px
+    classDef dbSubnet fill:#F3E5F5,stroke:#9C27B0,stroke-width:2px
+    classDef awsService fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#fff
+    classDef security fill:#FFEBEE,stroke:#F44336,stroke-width:2px
+    classDef routing fill:#E3F2FD,stroke:#2196F3,stroke-width:2px
+    classDef internet fill:#E8F5E8,stroke:#4CAF50,stroke-width:3px
+    
+    %% Apply Styles
+    class ALB1,NAT1,NAT2,BASTION1,EIP1,EIP2 publicSubnet
+    class EC2_1a,EC2_1b,EKS_NODE_1a,EKS_NODE_1b privateSubnet
+    class RDS_PRIMARY,RDS_STANDBY,DB_1a,DB_1b dbSubnet
+    class S3,ECR,CLOUDWATCH,EKS_CONTROL,SECRETS,IAM awsService
+    class SG_ALB,SG_WEB,SG_APP,SG_DB,SG_BASTION security
+    class RT_PUBLIC,RT_PRIVATE_1a,RT_PRIVATE_1b,RT_DB routing
+    class IGW internet
+```
