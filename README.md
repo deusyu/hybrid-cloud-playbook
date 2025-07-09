@@ -177,6 +177,7 @@ terraform apply
 
 ### 社区交流
 - 📖 **博客**：[技术博客](https://deusyu.app/)
+- 📚 **Terraform 101**：[Terraform 基础教程](https://deusyu.app/posts/about-terraform/)
 
 ## 📄 许可证
 
